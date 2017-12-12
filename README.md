@@ -17,6 +17,7 @@ This is a scrapper for site: www.wozwaardeloket.nl which is a real estate inform
 [https://www.wozwaardeloket.nl/index.jsp?a=1&accept=true&](https://www.wozwaardeloket.nl/index.jsp?a=1&accept=true&)
 
 * the website requires you to have a list of post code in Netherlands, here we have a copy of that.
+
 [all post codes of netherlands (csv file)](https://raw.githubusercontent.com/XetRAHF/Github_Markdown-Files/192628ff1cb7a7beadf5cedc0b4bacff724e9020/postcode_list.csv)
 
 * here we choose a postcode for demostration `7523VT`, when you type in the code in that textfield, the website will start a new request then give you the following result
@@ -26,7 +27,7 @@ This is a scrapper for site: www.wozwaardeloket.nl which is a real estate inform
 ![spider_stage_2](https://raw.githubusercontent.com/XetRAHF/Github_Markdown-Files/d4e36acc933b87455d0e2c7cb963249ca7dafa4b/postcode_stage_2.PNG)
 
 ## What is happening in the background
-* when we initiated following request to the website, it will set cookies on the browser, which is used for the website to detect web-bot
+* when we initiated following request to the website, it will `set cookies` in the browser, which is used for the website to detect web-bot
     * [https://www.wozwaardeloket.nl/index.jsp?a=1&accept=true&](https://www.wozwaardeloket.nl/index.jsp?a=1&accept=true&)
 
 * when we input a postcode, says `7523VT` to the website, the site will search the postcode on it's database. 
@@ -36,12 +37,18 @@ This is a scrapper for site: www.wozwaardeloket.nl which is a real estate inform
         * ![stage1_ajax.PNG](https://raw.githubusercontent.com/XetRAHF/Github_Markdown-Files/c2edf2e672873d2255a753c1d4573542a5ca6ae0/stage1_ajax.PNG)
     
     * another ajax request (GET) will start immediately after this request is completed
+        > This request takes the `id` from previous response.  
+
         * [https://www.wozwaardeloket.nl/api/geocoder/v2/lookup?id=pcd-55b2e73c50b5f35b9adcadf40768de91](https://www.wozwaardeloket.nl/api/geocoder/v2/lookup?id=pcd-55b2e73c50b5f35b9adcadf40768de91)
         * gives us following response:
             * ![stage2_ajax.PNG](https://raw.githubusercontent.com/XetRAHF/Github_Markdown-Files/c2edf2e672873d2255a753c1d4573542a5ca6ae0/stage2_ajax.PNG)
 
     
     * another ajax request (POST) will start immediately after this request is completed
+        > I have tested that if we remove all the `headers` in the post except the `Cookie` value, the request will also work normally.
+        > If we use different `JSESSIONID` on each request we send, we'll never get banned.
+        > this request takes the 
+
         * ![https://www.wozwaardeloket.nl/woz-proxy/wozloket](https://www.wozwaardeloket.nl/woz-proxy/wozloket)
         * POST headers
             * ![stage3_ajax_headers.PNG](https://raw.githubusercontent.com/XetRAHF/Github_Markdown-Files/c2edf2e672873d2255a753c1d4573542a5ca6ae0/stage3_ajax_headers.PNG)
@@ -106,7 +113,10 @@ This is a scrapper for site: www.wozwaardeloket.nl which is a real estate inform
 
 
 ## how we can scrape the site
+* are you still considering using the traditional ways to scrape this website? well we don't nee to do that. Look at that request BODY, you should find that we can change the filters to dump his database, AMAZING and let's do it.
 
+## The intellegent way (Hacking the openlayer 3 database)
+* All we need is to have a list of `wobj_obj_id` we need to find the range of the wobj_obj_id, so that we can dump the database in batches.
 
 
 
