@@ -120,8 +120,9 @@ def parse_json_save_to_sqlite(json_string):
         
         try:
             building.save()
-        except:
-            pass
+        except Exception as e:
+            logging.error(e)
+            logging.error("Got a duplicate record")
         
 #         print("Saving property to database now, process: {:2.2f}% ...".format((index+1)*100/(total)), end="\r")
 
