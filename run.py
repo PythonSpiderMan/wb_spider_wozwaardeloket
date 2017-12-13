@@ -25,7 +25,7 @@ def parse_json_save_to_sqlite(json_string):
         logging.error(e)
         logging.error("There is no features here")
     
-    obj_features = None
+    obj_features = []
     try:
         obj_features = json_obj['features']
     except Exception as e:
