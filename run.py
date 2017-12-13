@@ -326,19 +326,22 @@ def parse_each_property_price(json_string):
         if '2015' in str(each_obj['wobj_wrd_peildatum']):
             try:
                 price15 = int(each_obj['wobj_wrd_woz_waarde'])/1000
+                price15 = "{:.3f}".format(price15)
             except Exception as e:
-                price15 = "none"
+                price15 = None
             try:
                 price16 = int(each_obj['wobj_huidige_woz_waarde'])/1000
+                price16 = "{:.3f}".format(price16)
             except Exception as e:
-                price16 = "none"
+                price16 = None
         elif '2016' in str(each_obj['wobj_wrd_peildatum']):
             try:
                 price17 = int(each_obj['wobj_huidige_woz_waarde'])/1000
+                price17 = "{:.3f}".format(price17)
             except Exception as e:
-                price17 = "none"
+                price17 = None
 
-        return "{:.3f}".format(price15), "{:.3f}".format(price16), "{:.3f}".format(price17)
+        return price15, price16, price17
 
 
 
