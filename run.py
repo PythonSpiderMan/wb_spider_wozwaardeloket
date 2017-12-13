@@ -237,7 +237,7 @@ def scrape_obj_from_id_to_id(f=None, t=None):
 
 def scrape_range_and_save(arg):
     global objects_total, objects_done
-    step = 5000
+    step = 2000
     json_string = scrape_obj_from_id_to_id(arg*step+1, (arg+1)*step)
     parse_json_save_to_sqlite(json_string=json_string)
     objects_done += 1
@@ -251,7 +251,7 @@ def stage1_scrape_all_obj():
     threads = input("how many threads you want to use? (e.g. 100)")
 
     print("deploying threads, please wait .... ")
-    total_steps = range(0, 200000000)
+    total_steps = range(0, 500000000)
     objects_total = len(total_steps)
 
     pool = ThreadPool(int(threads))
