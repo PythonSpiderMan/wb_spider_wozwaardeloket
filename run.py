@@ -248,11 +248,13 @@ def scrape_range_and_save(arg):
 def stage1_scrape_all_obj():
     global objects_total, objects_done
 
+    threads = input("how many threads you want to use? (e.g. 100)")
+
     print("deploying threads, please wait .... ")
     total_steps = range(0, 200000000)
     objects_total = len(total_steps)
 
-    pool = ThreadPool(200)
+    pool = ThreadPool(int(threads))
     pool.map(scrape_range_and_save, total_steps)
     pool.close()
     pool.join()
