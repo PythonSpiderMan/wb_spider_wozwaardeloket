@@ -31,8 +31,15 @@ def parse_json_save_to_sqlite(json_string):
     except Exception as e:
         logging.error(e)
         logging.error("There is no features here")
-        
-    print("------------- get total: %s properties ----------------" % str(total))
+
+    try:
+        if int(total) > 0:
+            print("------------- get total: %s properties ----------------" % str(total))
+        else:
+            pass
+    except Exception as e:
+        pass
+
     for index, each_building in enumerate(obj_features):
         building_info = None
         try:
@@ -230,7 +237,7 @@ def scrape_obj_from_id_to_id(f=None, t=None):
 
 def scrape_range_and_save(arg):
     global objects_total, objects_done
-    step = 2000
+    step = 5000
     json_string = scrape_obj_from_id_to_id(arg*step+1, (arg+1)*step)
     parse_json_save_to_sqlite(json_string=json_string)
     objects_done += 1
@@ -240,11 +247,12 @@ def scrape_range_and_save(arg):
 
 def stage1_scrape_all_obj():
     global objects_total, objects_done
-    # the 5000000000 is the step in range, if the script met error, we will need to change this.
-    total_steps = range(0, 500000000)
+
+    print("deploying threads, please wait .... ")
+    total_steps = range(0, 200000000)
     objects_total = len(total_steps)
-    
-    pool = ThreadPool(150)
+
+    pool = ThreadPool(200)
     pool.map(scrape_range_and_save, total_steps)
     pool.close()
     pool.join()
