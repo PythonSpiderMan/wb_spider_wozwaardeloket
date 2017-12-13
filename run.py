@@ -18,10 +18,27 @@ def parse_json_save_to_sqlite(json_string):
         logging.error(e)
         logging.error("there is some problem with json loading")
     
-    total = len(json_obj['features'])
+    total = None
+    try:
+        total = len(json_obj['features'])
+    except Exception as e:
+        logging.error(e)
+        logging.error("There is no features here")
+    
+    obj_features = None
+    try:
+        obj_features = json_obj['features']
+    except Exception as e:
+        logging.error(e)
+        logging.error("There is no features here")
+        
     print("------------- get total: %s properties ----------------" % str(total))
-    for index, each_building in enumerate(json_obj['features']):
-        building_info = each_building['properties']
+    for index, each_building in enumerate(obj_features):
+        try:
+            building_info = each_building['properties']
+        except Exception as e:
+            logging.error(e)
+            logging.error("There is no properties here")
         
         building = PropertyModel()
         if len(str(building_info['wobj_obj_id'])) > 0:
