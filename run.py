@@ -228,10 +228,10 @@ def scrape_obj_from_id_to_id(f=None, t=None):
     return response.text
 
 
-def scrape_range_and_save(args):
+def scrape_range_and_save(arg):
     global objects_total, objects_done
-    json_string = scrape_obj_from_id_to_id(args[0], args[1])
-    print("----------------- Databased dumped, start parsing :) -------------------", end="\n")
+    step = 2000
+    json_string = scrape_obj_from_id_to_id(arg*step+1, (arg+1)*step)
     parse_json_save_to_sqlite(json_string=json_string)
     objects_done += 1
     print("----------------- Process: {:2.2f}%------------------".format((objects_done)*100/(objects_total)))
@@ -241,12 +241,11 @@ def scrape_range_and_save(args):
 def stage1_scrape_all_obj():
     global objects_total, objects_done
     # the 5000000000 is the step in range, if the script met error, we will need to change this.
-    range_list = numpy.arange(1, 999999999999, 2000)
-    arg_list = [[range_list[index], range_list[index+1]]for index in range(len(range_list)-1)]
-    objects_total = len(arg_list)
+    total_steps = range(0, 500000000)
+    objects_total = len(total_steps)
     
-    pool = ThreadPool(100)
-    pool.map(scrape_range_and_save, arg_list)
+    pool = ThreadPool(150)
+    pool.map(scrape_range_and_save, total_steps)
     pool.close()
     pool.join()
     objects_total = 0
