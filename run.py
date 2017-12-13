@@ -138,10 +138,18 @@ def parse_json_save_to_sqlite(json_string):
         else:
             building.oppervlakte = "none"
             print("this building has no oppervlakte. ")
-        
-        
-        building.price_2015, building.price_2016 = \
+
+        pr_2015, pr_2016, pr_2017 = \
             parse_each_property_price(scrape_each_property_price(building.identificatie))
+
+        if pr_2015 is not None:
+            building.price_2015 = pr_2015
+
+        if pr_2016 is not None:
+            building.price_2016 = pr_2016
+
+        if pr_2017 is not None:
+            building.price_2017 = pr_2017
         
         try:
             building.save()
@@ -165,6 +173,7 @@ class PropertyModel(BaseModel):
     
     price_2015 = CharField(null=True)
     price_2016 = CharField(null=True)
+    price_2017 = CharField(null=True)
     
     bouwjaar = CharField(null=True)
     gebruiksdoel = CharField(null=True)
@@ -238,7 +247,7 @@ def scrape_obj_from_id_to_id(f=None, t=None):
 def scrape_range_and_save(arg):
     global objects_total, objects_done
     step = 2000
-    json_string = scrape_obj_from_id_to_id(arg*step+1, (arg+1)*step)
+    json_string = scrape_obj_from_id_to_id(arg*step+1, ((arg+1)*step)+2)
     parse_json_save_to_sqlite(json_string=json_string)
     objects_done += 1
     print("----------------- Process: {:2.2f}%------------------".format((objects_done)*100/(objects_total)))
@@ -254,10 +263,13 @@ def stage1_scrape_all_obj():
     total_steps = range(0, 500000000)
     objects_total = len(total_steps)
 
-    pool = ThreadPool(int(threads))
-    pool.map(scrape_range_and_save, total_steps)
-    pool.close()
-    pool.join()
+    chunks = [total_steps[x:x + 1000] for x in range(0, len(total_steps), 1000)]
+    for each_chunk in chunks:
+        pool = ThreadPool(int(threads))
+        pool.map(scrape_range_and_save, each_chunk)
+        pool.close()
+        pool.join()
+
     objects_total = 0
     objects_done = 0
 
@@ -302,24 +314,31 @@ def scrape_each_property_price(property_id):
 
 
 def parse_each_property_price(json_string):
+    json_objs = None
     try:
-        json_obj = json.loads(json_string)['features'][0]['properties']
+        json_objs = json.loads(json_string)['features']
     except Exception as e:
         logging.error(e)
         logging.error("there is some problem with json loading")
-    
-    price15, price16 = None, None
-    try:
-        price15 = int(json_obj['wobj_wrd_woz_waarde'])/1000
-    except Exception as e:
-        price15 = "none"
-        
-    try:
-        price16 = int(json_obj['wobj_huidige_woz_waarde'])/1000
-    except Exception as e:
-        price16 = "none"
-    
-    return "{:.3f}".format(price15), "{:.3f}".format(price16)
+
+    price15, price16, price17 = None, None, None
+    for each_obj in json_objs['properties']:
+        if '2015' in str(each_obj['wobj_wrd_peildatum']):
+            try:
+                price15 = int(each_obj['wobj_wrd_woz_waarde'])/1000
+            except Exception as e:
+                price15 = "none"
+            try:
+                price16 = int(each_obj['wobj_huidige_woz_waarde'])/1000
+            except Exception as e:
+                price16 = "none"
+        elif '2016' in str(each_obj['wobj_wrd_peildatum']):
+            try:
+                price17 = int(each_obj['wobj_huidige_woz_waarde'])/1000
+            except Exception as e:
+                price17 = "none"
+
+        return "{:.3f}".format(price15), "{:.3f}".format(price16), "{:.3f}".format(price17)
 
 
 
