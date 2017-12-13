@@ -7,7 +7,7 @@ import numpy
 import logging
 from multiprocessing.dummy import Pool as ThreadPool
 import threading
-import time
+
 
 objects_done = 0
 objects_total = 0
@@ -210,8 +210,7 @@ def scrape_obj_from_id_to_id(f=None, t=None):
         logging.error(e)
         logging.error("Please fix your network connection status immediately")
         logging.error("the script will wait for you about 10 seconds :< ")
-        time.sleep(10)
-    
+
     xml_obj = \
     """
     <wfs:GetFeature
@@ -290,8 +289,7 @@ def scrape_each_property_price(property_id):
         logging.error(e)
         logging.error("Please fix your network connection status immediately")
         logging.error("the script will wait for you about 10 seconds :< ")
-        time.sleep(10)
-    
+
     xml_obj = \
     """
     <wfs:GetFeature
