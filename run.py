@@ -34,6 +34,7 @@ def parse_json_save_to_sqlite(json_string):
         
     print("------------- get total: %s properties ----------------" % str(total))
     for index, each_building in enumerate(obj_features):
+        building_info = None
         try:
             building_info = each_building['properties']
         except Exception as e:
