@@ -241,7 +241,7 @@ def scrape_range_and_save(args):
 def stage1_scrape_all_obj():
     global objects_total, objects_done
     # the 5000000000 is the step in range, if the script met error, we will need to change this.
-    range_list = numpy.arange(1, 999999999999, 5000000)
+    range_list = numpy.arange(1, 999999999999, 2000)
     arg_list = [[range_list[index], range_list[index+1]]for index in range(len(range_list)-1)]
     objects_total = len(arg_list)
     
