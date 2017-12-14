@@ -326,7 +326,7 @@ def scrape_each_property_price(property_id):
 
 
 def parse_each_property_price(json_string):
-    json_objs = None
+    json_objs = []
     try:
         json_objs = json.loads(json_string)['features']
     except Exception as e:
@@ -335,7 +335,10 @@ def parse_each_property_price(json_string):
 
     price15, price16, price17 = None, None, None
     for obj in json_objs:
-        each_obj = obj['properties']
+        try:
+            each_obj = obj['properties']
+        except Exception as e:
+            logging.error(e)
         
         if '2015' in str(each_obj['wobj_wrd_peildatum']):
             try:
