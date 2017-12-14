@@ -334,7 +334,9 @@ def parse_each_property_price(json_string):
         logging.error("there is some problem with json loading")
 
     price15, price16, price17 = None, None, None
-    for each_obj in json_objs['properties']:
+    for obj in json_objs:
+        each_obj = obj['properties']
+        
         if '2015' in str(each_obj['wobj_wrd_peildatum']):
             try:
                 price15 = int(each_obj['wobj_wrd_woz_waarde'])/1000
