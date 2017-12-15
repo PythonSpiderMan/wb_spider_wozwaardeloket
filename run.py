@@ -184,7 +184,6 @@ class PropertyModel(BaseModel):
     gebruiksdoel = CharField(null=True)
     oppervlakte = CharField(null=True)
 
-
 def init_database():
     db = SqliteDatabase("netherland_properties.db")
     db.connect()
@@ -262,7 +261,7 @@ def scrape_obj_from_id_to_id(f=None, t=None):
 
 def scrape_range_and_save(arg):
     global objects_total, objects_done
-    step = 2000
+    step = 5000
     json_string = scrape_obj_from_id_to_id(arg*step+1, ((arg+1)*step)+2)
     parse_json_save_to_sqlite(json_string=json_string)
     objects_done += 1
@@ -274,9 +273,11 @@ def stage1_scrape_all_obj():
     global objects_total, objects_done
 
     threads = input("how many threads you want to use? (e.g. 100)")
+    computers = input("how many crawlers do you want to deploy in total? (e.g. 2)")
+    index_computer = input("please type in the index of this computer (e.g. 0)")
 
     print("deploying threads, please wait .... ")
-    total_steps = range(0, 500000000)
+    total_steps = range(0, 200000000)
     objects_total = len(total_steps)
 
     chunks = [total_steps[x:x + 1000] for x in range(0, len(total_steps), 1000)]
